@@ -1,5 +1,5 @@
 on fs
-   start  mqsasd
+   start mqsasd
 
 on post-fs-data
     mkdir /data/system 0775 system system
@@ -22,10 +22,6 @@ service mdbd /sbin/mdbd
     seclabel u:r:mdbd:s0
 
 service shelld /system/xbin/shelld
-    class main
-
-#service for su
-service su_daemon /system/xbin/su --daemon
     class main
 
 # service for mcd init

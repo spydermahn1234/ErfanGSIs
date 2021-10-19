@@ -39,7 +39,7 @@ do
     fi
 done
 if [ "$flag" == "false" ]; then
-    echo "$romtype is not supported rom, supported roms:"
+    echo "$romtype is not supported, supported roms:"
     for dir in "${roms[@]}"
     do
         ver=`echo "$dir" | rev | cut -d "/" -f 2 | rev`
@@ -54,7 +54,7 @@ case "$outputtype" in
     *"Aonly"*) flag=true ;;
 esac
 if [ "$flag" == "false" ]; then
-    echo "$outputtype is not supported type, supported types:"
+    echo "$outputtype is not supported, supported types:"
     echo "AB"
     echo "Aonly"
     exit 1
@@ -80,24 +80,23 @@ romsdir="$LOCALDIR/roms"
 prebuiltdir="$LOCALDIR/prebuilt"
 scriptsdir="$LOCALDIR/scripts"
 
-echo "Create Temp dir"
 rm -rf $tempdir
 mkdir -p "$systemdir"
 
 if [ "$sourcetype" == "Aonly" ]; then
-    echo "Warning: Aonly source detected, using P AOSP ramdisk"
+    echo "using P AOSP ramdisk"
     cd "$systemdir"
     tar xf "$prebuiltdir/ABrootDir.tar"
     cd "$LOCALDIR"
-    echo "Making copy of source rom to temp"
-    ( cd "$systempath" ; sudo tar cf - . ) | ( cd "$systemdir/system" ; sudo tar xf - )
+    echo "Copying to temp"
+    ( cd "$sourcepath" ; sudo tar cf - . ) | ( cd "$systemdir/system" ; sudo tar xf - ) &> /dev/null
     cd "$LOCALDIR"
     sed -i "/ro.build.system_root_image/d" "$systemdir/system/build.prop"
     sed -i "/ro.build.ab_update/d" "$systemdir/system/build.prop"
     echo "ro.build.system_root_image=false" >> "$systemdir/system/build.prop"
 else
-    echo "Making copy of source rom to temp"
-    ( cd "$systempath" ; sudo tar cf - . ) | ( cd "$systemdir" ; sudo tar xf - )
+    echo "Copying to temp"
+    ( cd "$systempath" ; sudo tar cf - . ) | ( cd "$systemdir" ; sudo tar xf - ) &> /dev/null
     if [[ -e "$sourcepath/mounted.txt" ]]; then
         for p in `cat "$sourcepath/mounted.txt"`; do
             [[ $p = system ]] && continue
@@ -107,7 +106,7 @@ else
                 mkdir "$systemdir/system/$p"
                 rm -rf "$systemdir/$p"
                 ln -s "/system/$p" "$systemdir/$p"
-                ( cd "$sourcepath/$p" ; sudo tar cf - . ) | ( cd "$systemdir/system/$p" ; sudo tar xf - )
+                ( cd "$sourcepath/$p" ; sudo tar cf - . ) | ( cd "$systemdir/system/$p" ; sudo tar xf - ) &> /dev/null
             fi
         done
     fi
@@ -147,34 +146,19 @@ fi
 
 # Detect rom folder again
 if [[ ! -d "$romsdir/$sourcever/$romtype" ]]; then
-    echo "$romtype is not supported rom for android $sourcever"
+    echo "$romtype is not supported for $sourcever"
     exit 1
 fi
 
 # Detect arch
 if [[ ! -f "$systemdir/system/lib64/libandroid.so" ]]; then
-    echo "32bit source detected, weird flex but ok!"
+    echo "32bit source detected!"
     # do something here?
 fi
 
 # Debloat
 $romsdir/$sourcever/$romtype/debloat.sh "$systemdir/system" 2>/dev/null
 $romsdir/$sourcever/$romtype/$romtypename/debloat.sh "$systemdir/system" 2>/dev/null
-
-# Resign to AOSP keys
-if [[ ! -e $romsdir/$sourcever/$romtype/$romtypename/DONTRESIGN ]]; then
-    if [[ ! -e $romsdir/$sourcever/$romtype/DONTRESIGN ]]; then
-        echo "Resigning to AOSP keys"
-        ispython2=`python -c 'import sys; print("%i" % (sys.hexversion<0x03000000))'`
-        if [ $ispython2 -eq 0 ]; then
-            python2=python2
-        else
-            python2=python
-        fi
-        $python2 $toolsdir/ROM_resigner/resign.py "$systemdir/system" $toolsdir/ROM_resigner/AOSP_security > $tempdir/resign.log
-        $prebuiltdir/resigned/make.sh "$systemdir/system" 2>/dev/null
-    fi
-fi
 
 # Start patching
 echo "Patching started..."
@@ -235,7 +219,7 @@ elif [[ $(grep "ro.build.id" $systemdir/system/build.prop) ]]; then
 fi
 displayid2=$(echo "$displayid" | sed 's/\./\\./g')
 bdisplay=$(grep "$displayid" $systemdir/system/build.prop | sed 's/\./\\./g; s:/:\\/:g; s/\,/\\,/g; s/\ /\\ /g')
-sed -i "s/$bdisplay/$displayid2=Built\.with\.ErfanGSI\.Tools/" $systemdir/system/build.prop
+sed -i "s/$bdisplay/$displayid2=Ported\.By\.Nippon\.using\.ErfanGSI\.Tools/" $systemdir/system/build.prop
 
 # Getting system size and add approximately 5% on it just for free space
 systemsize=`du -sk $systemdir | awk '{$1*=1024;$1=int($1*1.05);printf $1}'`
@@ -257,5 +241,4 @@ if [ "$sourcever" == "9" ]; then
 fi
 $scriptsdir/mkimage.sh $systemdir $outputtype $systemsize $output $useold > $tempdir/mkimage.log
 
-echo "Remove Temp dir"
 rm -rf "$tempdir"

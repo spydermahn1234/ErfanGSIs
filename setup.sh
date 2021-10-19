@@ -1,17 +1,7 @@
 #!/bin/bash
+# Install necessarily packages for run tools on Ubuntu-18.04 re
 
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    distro=$(awk -F= '$1 == "ID" {print $2}' /etc/os-release)
-    id_like=$(awk -F= '$1 == "ID_LIKE" {print $2}' /etc/os-release)
-    if [[ "$distro" == "arch" || "$id_like" == "arch" ]]; then
-       echo "Arch Linux Detected"
-       sudo pacman -S --needed unace unrar zip unzip p7zip sharutils uudeview arj cabextract file-roller dtc xz python-pip brotli lz4 gawk libmpack aria2
-       #aur=rar
-    else
-       sudo apt install unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller device-tree-compiler liblzma-dev python-pip brotli liblz4-tool gawk aria2
-    fi
-    pip install backports.lzma protobuf pycrypto
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    brew install protobuf xz brotli lz4 aria2
-    pip install backports.lzma protobuf pycrypto
-fi
+sudo apt install unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller device-tree-compiler liblzma-dev brotli liblz4-tool axel gawk aria2 detox cpio rename build-essential simg2img aria2 python3-pip default-jre -y
+pip3 install wheel setuptools
+pip3 install backports.lzma docopt zstandard bsdiff4 protobuf pycryptodome
+sudo pip3 install --upgrade protobuf

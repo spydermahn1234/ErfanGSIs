@@ -4,7 +4,7 @@ LOCALDIR=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 TOOLS_DIR="$LOCALDIR/tools"
 
 git submodule update --init --recursive
-git pull --recurse-submodules
+git pull --ff-only --recurse-submodules
 
 if [[ -d "$TOOLS_DIR/Firmware_extractor" ]]; then
     git -C "$TOOLS_DIR"/Firmware_extractor fetch origin

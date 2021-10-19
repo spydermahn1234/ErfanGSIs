@@ -5,9 +5,9 @@ romdir=$2
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
 # Deal with non-flattened apex
-#$thispath/../../scripts/apex_extractor.sh $1/apex
-#$thispath/../../scripts/apex_extractor.sh $1/system_ext/apex
+$thispath/../../scripts/apex_extractor.sh $1/apex
 echo "ro.apex.updatable=true" >> $1/product/etc/build.prop
+rm -rf $1/apex/*/
 
 # Copy system files
 rsync -ra $thispath/system/ $systempath
@@ -21,9 +21,7 @@ mkdir -p $1/product/overlay
 
 cp -fpr $thispath/nondevice_overlay/* $1/product/overlay/
 
-if [ -f $romdir/NODEVICEOVERLAY ]; then
-    echo "Using device specific overlays is not supported in this rom. Skipping..."
-else
+if [[ ! -f "$romdir/NODEVICEOVERLAY" ]]; then
     cp -fpr $thispath/overlay/* $1/product/overlay/
 fi
 
@@ -77,3 +75,29 @@ echo "debug.sf.high_fps_early_phase_offset_ns=" >> $1/product/etc/build.prop
 echo "debug.sf.high_fps_early_gl_phase_offset_ns=" >> $1/product/etc/build.prop
 echo "debug.sf.high_fps_early_app_phase_offset_ns=" >> $1/product/etc/build.prop
 echo "debug.sf.high_fps_early_gl_app_phase_offset_ns=" >> $1/product/etc/build.prop
+
+# Append usefull stuff
+echo "ro.support_one_handed_mode=true" >> $1/build.prop
+echo "ro.boot.vendor.overlay.theme=com.google.android.systemui.gxoverlay" >> $1/product/etc/build.prop
+echo "ro.config.ringtone=The_big_adventure.ogg" >> $1/product/etc/build.prop
+echo "ro.config.notification_sound=Popcorn.ogg" >> $1/product/etc/build.prop
+echo "ro.config.alarm_alert=Bright_morning.ogg" >> $1/product/etc/build.prop
+echo "persist.sys.overlay.pixelrecents=true" >> $1/product/etc/build.prop
+echo "qemu.hw.mainkeys=0" >> $1/product/etc/build.prop
+echo "ro.opa.eligible_device=true" >> $1/product/etc/build.prop
+echo "ro.atrace.core.services=com.google.android.gms,com.google.android.gms.ui,com.google.android.gms.persistent" >> $1/product/etc/build.prop
+echo "ro.com.android.dataroaming=false" >> $1/product/etc/build.prop
+echo "ro.com.google.clientidbase=android-google" >> $1/product/etc/build.prop
+echo "ro.error.receiver.system.apps=com.google.android.gms" >> $1/product/etc/build.prop
+echo "ro.com.google.ime.theme_id=5" >> $1/product/etc/build.prop
+echo "ro.com.google.ime.system_lm_dir=/product/usr/share/ime/google/d3_lms" >> $1/product/etc/build.prop
+echo "ro.com.google.ime.height_ratio=1.0" >> $1/product/etc/build.prop
+
+# random fixes
+rm -rf $1/product/etc/security/avb
+sed -i "/dataservice_app/d" $1/product/etc/selinux/product_seapp_contexts
+sed -i "/dataservice_app/d" $1/system_ext/etc/selinux/system_ext_seapp_contexts
+sed -i "/ro.sys.sdcardfs/d" $1/product/etc/build.prop
+echo "persist.sys.fflag.override.settings_provider_model=false" >> $1/build.prop
+echo "persist.sys.fflag.override.settings_network_and_internet_v2=true" >> $1/build.prop
+echo "persist.sys.binary_xml=false" >> $1/build.prop
