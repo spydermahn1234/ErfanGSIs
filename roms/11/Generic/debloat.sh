@@ -3,7 +3,7 @@
 systempath=$1
 thispath=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`
 
-# small debloat
+# Drop useless things here
 rm -rf $1/product_services/app/YouTube
 rm -rf $1/product/app/YouTube
 rm -rf $1/app/datastatusnotification
@@ -29,11 +29,7 @@ rm -rf $1/product/app/WallpapersBReel2017
 rm -rf $1/product/priv-app/EuiccSupportPixel
 rm -rf $1/product/priv-app/EuiccGoogle
 rm -rf $1/product/priv-app/WfcActivation
-
-# Fix Files-DocumentsUI
 rm -rf $1/product/overlay/PixelDocumentsUIOverlay
-
-# Some Unused Google Apps
 rm -rf $1/product/app/Music2
 rm -rf $1/product/app/Photos
 rm -rf $1/product/app/Videos

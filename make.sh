@@ -152,7 +152,7 @@ fi
 
 # Detect arch
 if [[ ! -f "$systemdir/system/lib64/libandroid.so" ]]; then
-    echo "32bit source detected!"
+    echo "32bit source!"
     # do something here?
 fi
 
@@ -161,7 +161,6 @@ $romsdir/$sourcever/$romtype/debloat.sh "$systemdir/system" 2>/dev/null
 $romsdir/$sourcever/$romtype/$romtypename/debloat.sh "$systemdir/system" 2>/dev/null
 
 # Start patching
-echo "Patching started..."
 $scriptsdir/fixsymlinks.sh "$systemdir/system" 2>/dev/null
 $scriptsdir/nukeABstuffs.sh "$systemdir/system" 2>/dev/null
 $prebuiltdir/vendor_vndk/make$sourcever.sh "$systemdir/system" 2>/dev/null
@@ -232,9 +231,9 @@ bytesToHuman() {
     done
     echo "$b$d ${S[$s]}"
 }
-echo "Raw Image Size: $(bytesToHuman $systemsize)" >> "$outputinfo"
+echo "Image Size: $(bytesToHuman $systemsize)" >> "$outputinfo"
 
-echo "Creating Image: $outputimagename"
+echo "Generating GSI: $outputimagename"
 # Use ext4fs to make image in P or older!
 if [ "$sourcever" == "9" ]; then
     useold="--old"

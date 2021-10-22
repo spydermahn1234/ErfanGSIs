@@ -9,7 +9,7 @@ PARTITIONS="system vendor cust odm oem factory product xrom systemex system_ext 
 AB=true
 AONLY=true
 MOUNTED=false
-CLEAN=false
+CLEAN=true
 
 usage()
 {
@@ -109,11 +109,11 @@ LEAVE()
 {
     UMOUNT "$PROJECT_DIR/working"
     rm -rf "$PROJECT_DIR/working"
-    exit 1
 }
 
 echo "Updating tools..."
-"$PROJECT_DIR"/update.sh
+"$PROJECT_DIR"/update.sh >> tmp.log
+echo "Create Temp and out dir"
 
 # Create input & working directory if it does not exist
 mkdir -p "$PROJECT_DIR/input" "$PROJECT_DIR/working" "$PROJECT_DIR/output"
@@ -129,16 +129,19 @@ if [ $MOUNTED == false ]; then
         RANDOMM=$(echo $RANDOM)
         ACTUAL_ZIP_NAME="$RANDOMM"_FIRMWARE.tgz
         ZIP_NAME="$PROJECT_DIR"/input/"$RANDOMM"_FIRMWARE.tgz
-        DOWNLOAD "$URL" "$ZIP_NAME"
+        echo "Downloading Firmware"
+        DOWNLOAD "$URL" "$ZIP_NAME" &> /dev/null
         URL="$ZIP_NAME"
     fi
-    $TOOLS_DIR/Firmware_extractor/extractor.sh "$URL" "$PROJECT_DIR/working" || exit 1
+    echo "Extracting Firmware"
+    $TOOLS_DIR/Firmware_extractor/extractor.sh "$URL" "$PROJECT_DIR/working" &> /dev/null || exit 1
+
     if [ $CLEAN == true ]; then
         rm -rf "$ZIP_NAME"
     fi
     MOUNT "$PROJECT_DIR/working"
     URL="$PROJECT_DIR/working"
-    
+
 fi
 
 if [ $AB == true ]; then
@@ -149,7 +152,7 @@ if [ $AONLY == true ]; then
     "$PROJECT_DIR"/make.sh "${URL}" "${SRCTYPE}" Aonly "$PROJECT_DIR/output" ${@} || LEAVE
 fi
 
-echo "Porting ${SRCTYPENAME} GSI done on: $PROJECT_DIR/output"
+echo "Porting GSI done on: output"
 
 if [[ -f "$PROJECT_DIR/private_utils.sh" ]]; then
     . "$PROJECT_DIR/private_utils.sh"
