@@ -111,10 +111,10 @@ LEAVE()
     rm -rf "$PROJECT_DIR/working"
 }
 
-echo "Updating tools..."
-"$PROJECT_DIR"/update.sh >> tmp.log
-echo "Create Temp and out dir"
+echo "Updating tools"
+"$PROJECT_DIR"/update.sh 2>/dev/null >> tmp.log
 
+echo "Create Temp and out dir"
 # Create input & working directory if it does not exist
 mkdir -p "$PROJECT_DIR/input" "$PROJECT_DIR/working" "$PROJECT_DIR/output"
 
