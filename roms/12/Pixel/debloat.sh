@@ -70,3 +70,7 @@ rm -rf $1/product/priv-app/SafetyHubPrebuilt
 rm -rf $1/product/priv-app/DreamlinerPrebuilt
 rm -rf $1/product/priv-app/DreamlinerUpdater
 rm -rf $1/system_ext/priv-app/HbmSVManager
+rm -rf $1/product/app/Chrome
+rm -rf $1/product/priv-app/Velvet
+rm -rf $1/product/priv-app/Chrome
+rm -rf $1/product/app/Velvet
