@@ -71,6 +71,10 @@ rm -rf $1/product/priv-app/DreamlinerPrebuilt
 rm -rf $1/product/priv-app/DreamlinerUpdater
 rm -rf $1/system_ext/priv-app/HbmSVManager
 rm -rf $1/product/app/Chrome
-rm -rf $1/product/priv-app/Velvet
-rm -rf $1/product/priv-app/Chrome
-rm -rf $1/product/app/Velvet
+rm -rf $1/product/tts
+rm -rf $1/product/wallpaper
+rm -rf $1/product/app/VoiceAccessPrebuilt
+rm -rf $1/product/app/SoundAmplifierPrebuilt
+rm -rf $1/product/app/SafetyRegulatoryInfo
+rm -rf $1/product/priv-app/SecurityHubPrebuilt
+rm -rf $1/product/etc/sysconfig/vendor-apex-allowlist.xml
