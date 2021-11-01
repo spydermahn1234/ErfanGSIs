@@ -49,8 +49,8 @@ rm -rf $1/product/priv-app/AmbientSensePrebuilt
 rm -rf $1/product/priv-app/GoogleCamera
 rm -rf $1/product/priv-app/CarrierServices
 rm -rf $1/system_ext/priv-app/GoogleFeedback
-rm -rf $1/system_ext/priv-app/PixelNfc
-rm -rf $1/app/NfcNci
+# rm -rf $1/system_ext/priv-app/PixelNfc
+# rm -rf $1/app/NfcNci
 rm -rf $1/system_ext/priv-app/YadaYada
 
 # Fix Files-DocumentsUI
