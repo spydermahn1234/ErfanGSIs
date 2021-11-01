@@ -18,3 +18,12 @@ for f in \
         mount -o bind "/mnt/phh/$b" "$f"
     fi
 done
+
+# drop qcom stuffs for non qcom devices
+if ! getprop ro.hardware | grep -qiE -e qcom -e mata;then
+    mount -o bind /mnt/phh/empty_dir /system/app/imssettings || true
+    mount -o bind /mnt/phh/empty_dir /system/priv-app/ims || true
+    mount -o bind /mnt/phh/empty_dir /system/app/ims || true
+    mount -o bind /mnt/phh/empty_dir /system/app/QtiTelephonyService || true
+    mount -o bind /mnt/phh/empty_dir /system/app/datastatusnotification || true
+fi
