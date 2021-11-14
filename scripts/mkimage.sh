@@ -102,6 +102,7 @@ if [[ -f "$tempdir/file_contexts" ]]; then
     echo "/my_carrier             u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/my_custom              u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/oppo_product           u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
+    echo "/oppo_version           u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/special_preload        u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/my_version             u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
     echo "/my_bigball(/.*)?       u:object_r:rootfs:s0" >> "$tempdir/file_contexts"
